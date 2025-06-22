@@ -25,3 +25,7 @@ flutter:
     - assets/grafiken/
     - assets/hintergruende/
     - assets/fotos/
+    - assets/fotos/beatles/
+    - assets/fotos/genesis/
+    - assets/icons/
+    # - assets/fotos/pinkfloyd/

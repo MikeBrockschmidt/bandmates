@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:music_info/src/features/beatles/beatles_band.dart';
 import 'package:music_info/src/theme/font_theme.dart';
 import 'package:music_info/src/common/info_text.dart';
-import 'package:music_info/src/features/beatles/george.dart';
-import 'package:music_info/src/features/beatles/paul.dart';
-import 'package:music_info/src/features/beatles/john.dart';
-import 'package:music_info/src/features/beatles/ringo.dart';
 import 'package:music_info/src/data/database_repository.dart';
+import 'package:music_info/src/common/artist_screen.dart';
+import 'package:music_info/src/band_logos_list.dart';
 
 void main() => runApp(const MyApp());
 
@@ -14,7 +13,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(theme: appTheme, home: const BeatlesPage());
+    return MaterialApp(
+      theme: appTheme,
+      debugShowCheckedModeBanner: false,
+      home: const BeatlesPage(),
+    );
   }
 }
 
@@ -30,23 +33,42 @@ class _BeatlesPageState extends State<BeatlesPage> {
 
   void onPersonTapped(int index) {
     if (selectedPerson == index) {
-      Widget nextPage;
+      final member = DatabaseRepository.beatlesMembers[index];
+      late Widget nextPage;
+
       switch (index) {
         case 0:
-          nextPage = const GeorgeDetailPage();
+          nextPage = ArtistDetailPage(
+            artistName: member.name,
+            logoAssetPath: 'assets/grafiken/TheBeatlesLogo-kl.jpg',
+            startImagePath: DatabaseRepository.georgeharrisonStartImagePath,
+          );
           break;
         case 1:
-          nextPage = const PaulDetailPage();
+          nextPage = ArtistDetailPage(
+            artistName: member.name,
+            logoAssetPath: 'assets/grafiken/TheBeatlesLogo-kl.jpg',
+            startImagePath: DatabaseRepository.paulmccartneyStartImagePath,
+          );
           break;
         case 2:
-          nextPage = const JohnDetailPage();
+          nextPage = ArtistDetailPage(
+            artistName: member.name,
+            logoAssetPath: 'assets/grafiken/TheBeatlesLogo-kl.jpg',
+            startImagePath: DatabaseRepository.johnlennonStartImagePath,
+          );
           break;
         case 3:
-          nextPage = const RingoDetailPage();
+          nextPage = ArtistDetailPage(
+            artistName: member.name,
+            logoAssetPath: 'assets/grafiken/TheBeatlesLogo-kl.jpg',
+            startImagePath: DatabaseRepository.ringostarrStartImagePath,
+          );
           break;
         default:
-          nextPage = const Text('Unbekannte Person');
+          return;
       }
+
       Navigator.push(context, MaterialPageRoute(builder: (_) => nextPage));
     } else {
       setState(() {
@@ -59,9 +81,10 @@ class _BeatlesPageState extends State<BeatlesPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final List<double> widths = [90, 110, 85, 83];
+    final members = DatabaseRepository.beatlesMembers;
 
     String currentBackground = selectedPerson != null
-        ? DatabaseRepository.beatlesMembers[selectedPerson!].imagePath
+        ? members[selectedPerson!].imagePath
         : 'assets/fotos/beatles.png';
 
     return Scaffold(
@@ -87,9 +110,10 @@ class _BeatlesPageState extends State<BeatlesPage> {
             left: (size.width - 240) / 2,
             child: GestureDetector(
               onTap: () {
-                setState(() {
-                  selectedPerson = null;
-                });
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const BeatlesBandPage()),
+                );
               },
               child: SizedBox(
                 width: 240,
@@ -97,6 +121,32 @@ class _BeatlesPageState extends State<BeatlesPage> {
               ),
             ),
           ),
+
+          Positioned(
+            top: 40,
+            right: 20,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => BandLogosList()),
+                );
+              },
+              child: Container(
+                width: 50,
+                height: 50,
+                alignment: Alignment.center,
+                color: Colors.transparent,
+                child: Image.asset(
+                  'assets/icons/vinyl.png',
+                  width: 28,
+                  height: 28,
+                ),
+              ),
+            ),
+          ),
+
           ...List.generate(4, (i) {
             double left = widths.sublist(0, i).fold(0, (a, b) => a + b);
             double width = widths[i];
@@ -122,15 +172,14 @@ class _BeatlesPageState extends State<BeatlesPage> {
             Positioned(
               left: 40,
               right: 40,
-              bottom: 90,
+              bottom: 20,
               child: SizedBox(
-                height: 110,
+                height: 180,
                 child: InfoText(
-                  name: DatabaseRepository.beatlesMembers[selectedPerson!].name,
-                  birthday: DatabaseRepository
-                      .beatlesMembers[selectedPerson!]
-                      .birthday,
-                  info: DatabaseRepository.beatlesMembers[selectedPerson!].info,
+                  name: members[selectedPerson!].name,
+                  birthday: members[selectedPerson!].birthday,
+                  info: members[selectedPerson!].info,
+                  musicGroups: members[selectedPerson!].musicGroups,
                 ),
               ),
             ),

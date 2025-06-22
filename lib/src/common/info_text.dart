@@ -4,12 +4,14 @@ class InfoText extends StatelessWidget {
   final String name;
   final String birthday;
   final String info;
+  final List<String> musicGroups;
 
   const InfoText({
     super.key,
     required this.name,
     required this.birthday,
     required this.info,
+    required this.musicGroups,
   });
 
   @override
@@ -34,13 +36,26 @@ class InfoText extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    'Musikgruppen:',
+                    'Info:',
                     style: textTheme.displayMedium,
                     textAlign: TextAlign.right,
                   ),
                   const SizedBox(height: 4),
                   Text(
                     info,
+                    style: textTheme.titleSmall,
+                    textAlign: TextAlign.right,
+                    softWrap: true,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Musikgruppen:',
+                    style: textTheme.displayMedium,
+                    textAlign: TextAlign.right,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    musicGroups.join(', '),
                     style: textTheme.titleSmall,
                     textAlign: TextAlign.right,
                     softWrap: true,

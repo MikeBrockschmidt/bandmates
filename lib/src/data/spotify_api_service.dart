@@ -1,19 +1,16 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'dart:math'; // Für die Zufallsauswahl eines Albums
+import 'dart:math';
 
-/// Ein Service, der alle Interaktionen mit der Spotify API kapselt.
 class SpotifyApiService {
   final String _clientId;
   final String _clientSecret;
-  String? _accessToken; // Der Access Token wird hier verwaltet
+  String? _accessToken;
 
   SpotifyApiService({required String clientId, required String clientSecret})
     : _clientId = clientId,
       _clientSecret = clientSecret;
 
-  /// Ruft einen neuen Spotify Access Token ab.
-  /// Gibt den Access Token bei Erfolg zurück, null bei Fehler.
   Future<String?> getAccessToken() async {
     final response = await http.post(
       Uri.parse('https://accounts.spotify.com/api/token'),
@@ -30,18 +27,15 @@ class SpotifyApiService {
       _accessToken = data['access_token'];
       return _accessToken;
     } else {
-      // Fehlerbehandlung kann hier detaillierter sein (z.B. Loggen)
       throw Exception(
         'Failed to get access token: ${response.statusCode} - ${response.body}',
       );
     }
   }
 
-  /// Sucht nach einem Künstler anhand seines Namens und gibt dessen ID zurück.
-  /// Gibt die Künstler-ID bei Erfolg zurück, null wenn nicht gefunden oder Fehler.
   Future<String?> searchArtistId(String artistName) async {
     if (_accessToken == null) {
-      await getAccessToken(); // Versuche, einen Token abzurufen, falls nicht vorhanden
+      await getAccessToken();
       if (_accessToken == null) return null;
     }
 
@@ -60,10 +54,9 @@ class SpotifyApiService {
       }
       return null;
     } else if (response.statusCode == 401) {
-      // Token abgelaufen, versuche neuen Token zu bekommen und Anruf zu wiederholen
       await getAccessToken();
       if (_accessToken != null) {
-        return searchArtistId(artistName); // Rekursiver Aufruf
+        return searchArtistId(artistName);
       }
       throw Exception('Unauthorized. Failed to refresh token.');
     } else {
@@ -73,14 +66,11 @@ class SpotifyApiService {
     }
   }
 
-  /// Ruft eine zufällige Auswahl von Alben für eine gegebene Künstler-ID ab.
-  /// Gibt ein Map mit Albumdetails zurück (Name, Releasedatum, Cover-URL, Spotify-URL).
-  /// Gibt null zurück, wenn keine Alben gefunden wurden oder ein Fehler auftrat.
   Future<Map<String, dynamic>?> fetchRandomAlbumForArtistId(
     String artistId,
   ) async {
     if (_accessToken == null) {
-      await getAccessToken(); // Versuche, einen Token abzurufen, falls nicht vorhanden
+      await getAccessToken();
       if (_accessToken == null) return null;
     }
 
@@ -129,10 +119,9 @@ class SpotifyApiService {
       }
       return null;
     } else if (response.statusCode == 401) {
-      // Token abgelaufen, versuche neuen Token zu bekommen und Anruf zu wiederholen
       await getAccessToken();
       if (_accessToken != null) {
-        return fetchRandomAlbumForArtistId(artistId); // Rekursiver Aufruf
+        return fetchRandomAlbumForArtistId(artistId);
       }
       throw Exception('Unauthorized. Failed to refresh token.');
     } else {
