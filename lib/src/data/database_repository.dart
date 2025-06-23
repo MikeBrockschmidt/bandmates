@@ -274,7 +274,8 @@ class DatabaseRepository {
   static const String smithsStartImagePath = 'assets/fotos/thesmiths_band.jpg';
   static const String mikeJoyceStartImagePath = 'assets/fotos/mike_joyce.jpg';
   static const String morrisseyStartImagePath = 'assets/fotos/morrissey.jpg';
-  static const String andyRourkeStartImagePath = 'assets/fotos/andy_rourke.jpg';
+  static const String andyRourkeStartImagePath =
+      'assets/fotos/andy_rourke_start.jpg';
   static const String johnnyMarrStartImagePath = 'assets/fotos/johnny_marr.jpg';
 
   static const String theSmithsStartImagePath =
